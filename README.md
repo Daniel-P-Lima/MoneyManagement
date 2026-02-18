@@ -1,59 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MoneyManagement
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A personal finance management web app to track income, expenses, budgets, and savings goals. Built with a Brazilian Real (R$) currency context.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Dashboard** — Monthly balance overview, income vs. expense trends (6-month chart), and category breakdowns
+- **Transactions** — Full CRUD for income and expense entries with categories, notes, and date filtering
+- **Budgets** — Set monthly budgets per category with percentage-based alerts (warns at 80%+)
+- **Categories** — Custom categories with icons and colors for both income and expenses
+- **Stash (Caixinhas)** — Savings goals with target amounts and progress tracking
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Layer | Technology |
+|---|---|
+| Backend | Laravel 12, PHP 8.2+ |
+| Frontend | Vue 3, Inertia.js 2, Tailwind CSS 4 |
+| Database | MySQL 8.4 |
+| Build | Vite 7 |
+| Charts | Chart.js 4 |
+| Dev Environment | Docker / Laravel Sail |
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- Docker Desktop
+- Node.js
+- Composer
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Setup
 
-## Laravel Sponsors
+**1. Clone and install dependencies:**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+git clone <repo-url>
+cd MoneyManagement
+composer install
+```
 
-### Premium Partners
+**2. Configure environment:**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+**3. Start Docker containers:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+./vendor/bin/sail up -d
+```
 
-## Code of Conduct
+> Tip: Add `alias sail="./vendor/bin/sail"` to your `~/.zshrc` so you can just run `sail up -d`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**4. Run migrations:**
 
-## Security Vulnerabilities
+```bash
+sail artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**5. Install frontend dependencies and start dev server:**
 
-## License
+```bash
+npm install
+npm run dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The app will be available at [http://localhost](http://localhost).
+
+## Development
+
+Run everything at once (PHP server + queue + Vite hot reload):
+
+```bash
+composer dev
+```
+
+Or run individually:
+
+```bash
+sail artisan serve          # PHP server
+sail artisan queue:listen   # Queue worker
+npm run dev                 # Vite dev server (port 5173)
+```
+
+## Available Scripts
+
+| Command | Description |
+|---|---|
+| `composer setup` | Full first-time setup (install, key, migrate, build) |
+| `composer dev` | Start all dev processes concurrently |
+| `composer test` | Run PHPUnit test suite |
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Build production assets |
+
+## Project Structure
+
+```
+app/
+├── Http/Controllers/   # Dashboard, Transaction, Budget, Category, Stash
+├── Models/             # Transaction, Category, Budget, Stash, User
+└── Helpers/            # Currency formatter (centavos → R$)
+
+resources/js/
+├── Pages/              # Inertia page components (Vue)
+├── Components/         # Shared components (BottomNav, MonthPicker, etc.)
+└── Layouts/            # App.vue main layout
+
+database/
+├── migrations/         # Users, Categories, Transactions, Budgets, Stashes
+└── seeders/
+```
+
+## Notes
+
+- All amounts are stored in **centavos** (integer) to avoid floating-point precision issues.
+- The app locale is `pt_BR` (Brazilian Portuguese).
+- Sessions, cache, and queues all use the database driver by default.
