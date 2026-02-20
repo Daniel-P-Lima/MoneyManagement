@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -8,17 +9,17 @@ const props = defineProps({
 });
 
 const months = [
-    'Janeiro','Fevereiro','Marco','Abril','Maio','Junho',
+    'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
 ];
 
-const prevMonth = props.transactionMonth === 1 ? 12 : props.transactionMonth - 1;
-const prevYear = props.transactionMonth === 1 ? props.transactionYear - 1 : props.transactionYear;
-const nextMonth = props.transactionMonth === 12 ? 1 : props.transactionMonth + 1;
-const nextYear = props.transactionMonth === 12 ? props.transactionYear + 1 : props.transactionYear;
+const prevMonth = computed(() => props.transactionMonth === 1 ? 12 : props.transactionMonth - 1);
+const prevYear  = computed(() => props.transactionMonth === 1 ? props.transactionYear - 1 : props.transactionYear);
+const nextMonth = computed(() => props.transactionMonth === 12 ? 1 : props.transactionMonth + 1);
+const nextYear  = computed(() => props.transactionMonth === 12 ? props.transactionYear + 1 : props.transactionYear);
 
 function buildUrl(m, y) {
-    return `${props.route}?transactionMonth=${m}&transactionYear=${y}`;
+    return `${props.route}?month=${m}&year=${y}`;
 }
 </script>
 
