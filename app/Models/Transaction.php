@@ -6,7 +6,9 @@ use App\Helpers\Currency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Database\Factories\TransactionFactory;
 
+#[UseFactory(TransactionFactory::class)]
 class Transaction extends Model
 {
     use HasFactory;
